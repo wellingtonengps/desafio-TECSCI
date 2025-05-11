@@ -1,0 +1,39 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "windows"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Usina {
+  id         Int        @id @default(autoincrement())
+  nome       String
+  inversores Inversor[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+model Inversor {
+  id        Int       @id @default(autoincrement())
+  modelo    String?
+  usinaId   Int
+  usina     Usina     @relation(fields: [usinaId], references: [id])
+  leituras  Leitura[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Leitura {
+  id                 Int      @id @default(autoincrement())
+  inversorId         Int
+  inversor           Inversor @relation(fields: [inversorId], references: [id])
+  datetime           DateTime
+  potenciaAtivaWatt  Float
+  temperaturaCelsius Float
+  createdAt          DateTime @default(now())
+
+  @@index([inversorId, datetime])
+}
