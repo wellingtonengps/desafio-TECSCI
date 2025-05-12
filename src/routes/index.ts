@@ -2,6 +2,7 @@ import { Router } from "express";
 import usinaController from "../controllers/usinaController";
 import inversorController from "../controllers/inversorController";
 import leituraController from "../controllers/leituraController";
+import * as fs from "fs";
 
 const Routers = Router();
 
@@ -29,6 +30,8 @@ Routers.post(
   "/api/leitura/upload",
   upload.single("file"),
   async (req: any, res) => {
+    const errorLogs: string[] = [];
+
     try {
       const jsonData = JSON.parse(req.file.buffer.toString());
 
@@ -40,14 +43,33 @@ Routers.post(
       }));
 
       for (const leitura of normalizedData) {
-        console.log(leitura);
-
-        await leituraController.createLeituraInterno(leitura);
+        try {
+          console.log(leitura);
+          await leituraController.createLeituraInterno(leitura);
+        } catch (leituraError: any) {
+          const errorMsg = `Erro ao inserir leitura: ${JSON.stringify(
+            leitura
+          )}`;
+          console.error(errorMsg);
+          errorLogs.push(errorMsg);
+        }
       }
 
-      res.status(200).json({ message: "Leituras inseridas com sucesso." });
+      if (errorLogs.length > 0) {
+        const logFile = __dirname + "/upload_errors.log"; // Caminho direto
+        const logContent = errorLogs.join("\n") + "\n";
+        fs.appendFileSync(logFile, logContent, "utf8");
+      }
+
+      res.status(200).json({
+        message: "Processamento finalizado.",
+        erros: errorLogs.length,
+        detalhes: errorLogs.length
+          ? "Erros foram salvos em upload_errors.log"
+          : "Nenhum erro encontrado",
+      });
     } catch (err: any) {
-      res.status(400).json({ error: err.message });
+      res.status(400).json({ error: "Erro geral: " + err.message });
     }
   }
 );
