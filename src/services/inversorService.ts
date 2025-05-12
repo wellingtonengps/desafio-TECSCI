@@ -36,10 +36,23 @@ const getInversor = async (id: number): Promise<InversorResponse> => {
   return inversor;
 };
 
+const getLeituraMediaTemperaturaPorDia = async (
+  inversorId: number,
+  dataInicio: Date,
+  dataFim: Date
+) => {
+  return await inversorRepositories.getLeituraMediaTemperaturaPorDia(
+    inversorId,
+    dataInicio,
+    dataFim
+  );
+};
+
 export const inversorService: InversorService = {
   createInversor,
   updateInversor,
   deleteInversor,
   getAllInversor,
   getInversor,
+  getLeituraMediaTemperaturaPorDia,
 };

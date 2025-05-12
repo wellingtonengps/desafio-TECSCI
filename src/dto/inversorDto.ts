@@ -15,6 +15,11 @@ interface InversorService {
   deleteInversor(id: number): Promise<void>;
   getAllInversor(): Promise<InversorResponse[]>;
   getInversor(id: number): Promise<InversorResponse | null>;
+  getLeituraMediaTemperaturaPorDia(
+    inversorId: number,
+    dataInicio: Date,
+    dataFim: Date
+  ): Promise<{ dia: Date; mediaTemperatura: number }[]>;
 }
 
 interface InversorRepository {
@@ -23,6 +28,11 @@ interface InversorRepository {
   deleteInversor(id: number): Promise<void>;
   getAllInversor(): Promise<InversorResponse[]>;
   getInversor(id: number): Promise<InversorResponse | null>;
+  getLeituraMediaTemperaturaPorDia(
+    inversorId: number,
+    dataInicio: Date,
+    dataFim: Date
+  ): Promise<{ dia: Date; mediaTemperatura: number }[]>;
 }
 
 export {

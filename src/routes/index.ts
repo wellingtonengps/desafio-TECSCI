@@ -18,6 +18,11 @@ Routers.post("/api/inversores", inversorController.createInversor); // Cria um n
 Routers.put("/api/inversores/:id", inversorController.updateInversor); // Atualiza os dados de um inversor
 Routers.delete("/api/inversores/:id", inversorController.deleteInversor); // Deleta um inversor
 
+Routers.get(
+  "/api/inversor/temperatura/media",
+  inversorController.getLeituraMediaTemperaturaPorDia
+);
+
 Routers.get("/api/leitura", leituraController.getAllLeituras); // Busca todas as temperaturas
 Routers.get("/api/leitura/:id", leituraController.getLeitura); // Busca uma temperatura por ID
 Routers.post("/api/leitura", leituraController.createLeitura); // Cria uma nova leitura de temperatura
@@ -47,7 +52,8 @@ Routers.post(
           console.log(leitura);
           await leituraController.createLeituraInterno(leitura);
         } catch (leituraError: any) {
-          const errorMsg = `Erro ao inserir leitura: ${JSON.stringify(
+          const timestamp = new Date().toISOString();
+          const errorMsg = `[${timestamp}] Erro ao inserir leitura: ${JSON.stringify(
             leitura
           )}`;
           console.error(errorMsg);

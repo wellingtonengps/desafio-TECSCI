@@ -1,2 +1,4 @@
 Erro ao inserir leitura: {"datetime":"2025-01-07T13:58:52.428Z","inversorId":3,"potenciaAtivaWatt":null,"temperaturaCelsius":null}
 Erro ao inserir leitura: {"datetime":"2025-01-07T17:26:12.458Z","inversorId":4,"potenciaAtivaWatt":null,"temperaturaCelsius":null}
+[2025-05-12T15:28:31.034Z] Erro ao inserir leitura: {"datetime":"2025-01-07T13:58:52.428Z","inversorId":3,"potenciaAtivaWatt":null,"temperaturaCelsius":null}
+[2025-05-12T15:28:32.547Z] Erro ao inserir leitura: {"datetime":"2025-01-07T17:26:12.458Z","inversorId":4,"potenciaAtivaWatt":null,"temperaturaCelsius":null}

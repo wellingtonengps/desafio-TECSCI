@@ -57,10 +57,36 @@ const getInversor = async (id: number) => {
   };
 };
 
+const getLeituraMediaTemperaturaPorDia = async (
+  inversorId: number,
+  dataInicio: Date,
+  dataFim: Date
+) => {
+  const resultados = await prisma.$queryRaw<
+    { dia: Date; media_temperatura: number }[]
+  >`
+    SELECT 
+      DATE("datetime") AS dia,
+      AVG("temperaturaCelsius") AS media_temperatura
+    FROM "Leitura"
+    WHERE 
+      "inversorId" = ${inversorId}
+      AND "datetime" BETWEEN ${dataInicio} AND ${dataFim}
+    GROUP BY dia
+    ORDER BY dia;
+  `;
+
+  return resultados.map((r) => ({
+    dia: r.dia,
+    mediaTemperatura: r.media_temperatura,
+  }));
+};
+
 export const inversorRepositories: InversorRepository = {
   createInversor,
   updateInversor,
   deleteInversor,
   getAllInversor,
+  getLeituraMediaTemperaturaPorDia,
   getInversor,
 };
