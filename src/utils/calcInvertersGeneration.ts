@@ -57,3 +57,5 @@ function calcInvertersGeneration(entitiesWithPower: EntityWithPower[]): number {
 
   return parseFloat(totalGeneration.toFixed(6));
 }
+
+export { calcInvertersGeneration, EntityWithPower, TimeseriesValue };

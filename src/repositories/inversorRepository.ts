@@ -5,6 +5,11 @@ import {
   InversorResponse,
 } from "../dto/inversorDto";
 import { LeituraRepository, LeituraResponse } from "../dto/leituraDto";
+import {
+  calcInvertersGeneration,
+  EntityWithPower,
+  TimeseriesValue,
+} from "../utils/calcInvertersGeneration";
 
 const createInversor = async ({ modelo, usinaId }: InversorRequest) => {
   const inversor = await prisma.inversor.create({
@@ -37,13 +42,11 @@ const deleteInversor = async (id: number) => {
 
 const getAllInversor = async () => {
   const inversores = await prisma.inversor.findMany();
-  return inversores.map(
-    (r: { id: number; modelo: string; usinaId: number }) => ({
-      id: r.id,
-      modelo: r.modelo ?? "",
-      usinaId: r.usinaId,
-    })
-  );
+  return inversores.map(({ id, modelo, usinaId }) => ({
+    id: id,
+    modelo: modelo ?? "",
+    usinaId: usinaId,
+  }));
 };
 
 const getInversor = async (id: number) => {
@@ -132,12 +135,10 @@ const getGeracaoInversor = async (
     },
   });
 
-  const timeseries: TimeseriesValue[] = leituras.map(
-    (leitura: LeituraResponse) => ({
-      date: leitura.datetime,
-      value: leitura.potenciaAtivaWatt,
-    })
-  );
+  const timeseries: TimeseriesValue[] = leituras.map((leitura) => ({
+    date: leitura.datetime,
+    value: leitura.potenciaAtivaWatt,
+  }));
 
   const entityWithPower: EntityWithPower = {
     power: timeseries,

@@ -118,6 +118,32 @@ const getPotenciaMaximaPorDia = async (req: Request, res: Response) => {
   }
 };
 
+const getGeracaoInversor = async (req: Request, res: Response) => {
+  try {
+    const { inversor_id, data_inicio, data_fim } = req.query;
+
+    if (!inversor_id || !data_inicio || !data_fim) {
+      res.status(400).json({
+        error: "Parâmetros obrigatórios: inversorId, dataInicio, dataFim.",
+      });
+    }
+
+    const id = Number(inversor_id);
+    const inicio = new Date(data_inicio as string);
+    const fim = new Date(data_fim as string);
+
+    if (isNaN(id) || isNaN(inicio.getTime()) || isNaN(fim.getTime())) {
+      res.status(400).json({ error: "Parâmetros inválidos." });
+    }
+
+    const resultado = await inversorService.getGeracaoInversor(id, inicio, fim);
+    res.status(200).json(resultado);
+  } catch (error: any) {
+    console.error("Erro ao obter média de temperatura por dia:", error);
+    res.status(500).json({ error: "Erro interno do servidor." });
+  }
+};
+
 export default {
   getAllInversores,
   getInversor,
@@ -126,4 +152,5 @@ export default {
   deleteInversor,
   getLeituraMediaTemperaturaPorDia,
   getPotenciaMaximaPorDia,
+  getGeracaoInversor,
 };

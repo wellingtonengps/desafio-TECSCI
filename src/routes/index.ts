@@ -28,6 +28,8 @@ Routers.get(
   inversorController.getPotenciaMaximaPorDia
 );
 
+Routers.get("/api/inversor/geracao", inversorController.getGeracaoInversor);
+
 Routers.get("/api/leitura", leituraController.getAllLeituras);
 Routers.get("/api/leitura/:id", leituraController.getLeitura);
 Routers.post("/api/leitura", leituraController.createLeitura);
