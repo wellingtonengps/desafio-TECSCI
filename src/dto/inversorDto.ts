@@ -29,7 +29,12 @@ interface InversorService {
     inversorId: number,
     dataInicio: Date,
     dataFim: Date
-  ): Promise<{ dia: Date; potenciaMaxima: number }[]>;
+  ): Promise<{
+    inversor_Id: number;
+    data_inicio: Date;
+    data_fim: Date;
+    totalGerado: number;
+  }>;
 }
 
 interface InversorRepository {
@@ -52,7 +57,12 @@ interface InversorRepository {
     inversorId: number,
     dataInicio: Date,
     dataFim: Date
-  ): Promise<{ dia: Date; potenciaMaxima: number }[]>;
+  ): Promise<{
+    inversor_Id: number;
+    data_inicio: Date;
+    data_fim: Date;
+    totalGerado: number;
+  }>;
 }
 
 export {

@@ -4,6 +4,7 @@ import {
   InversorRequest,
   InversorResponse,
 } from "../dto/inversorDto";
+import { LeituraRepository, LeituraResponse } from "../dto/leituraDto";
 
 const createInversor = async ({ modelo, usinaId }: InversorRequest) => {
   const inversor = await prisma.inversor.create({
@@ -36,11 +37,13 @@ const deleteInversor = async (id: number) => {
 
 const getAllInversor = async () => {
   const inversores = await prisma.inversor.findMany();
-  return inversores.map(({ id, modelo, usinaId }) => ({
-    id,
-    modelo: modelo ?? "",
-    usinaId,
-  }));
+  return inversores.map(
+    (r: { id: number; modelo: string; usinaId: number }) => ({
+      id: r.id,
+      modelo: r.modelo ?? "",
+      usinaId: r.usinaId,
+    })
+  );
 };
 
 const getInversor = async (id: number) => {
@@ -76,7 +79,7 @@ const getLeituraMediaTemperaturaPorDia = async (
     ORDER BY dia;
   `;
 
-  return resultados.map((r) => ({
+  return resultados.map((r: { dia: Date; media_temperatura: number }) => ({
     dia: r.dia,
     mediaTemperatura: r.media_temperatura,
   }));
@@ -101,7 +104,7 @@ const getPotenciaMaximaPorDia = async (
     ORDER BY dia;
   `;
 
-  return resultados.map((r) => ({
+  return resultados.map((r: { dia: Date; potencia_maxima: number }) => ({
     dia: r.dia,
     potenciaMaxima: r.potencia_maxima,
   }));
@@ -129,21 +132,22 @@ const getGeracaoInversor = async (
     },
   });
 
-  const timeseries: TimeseriesValue[] = leituras.map((leitura) => ({
-    date: leitura.datetime,
-    value: leitura.potenciaAtivaWatt,
-  }));
+  const timeseries: TimeseriesValue[] = leituras.map(
+    (leitura: LeituraResponse) => ({
+      date: leitura.datetime,
+      value: leitura.potenciaAtivaWatt,
+    })
+  );
 
   const entityWithPower: EntityWithPower = {
     power: timeseries,
   };
-
-  calcInvertersGeneration(entityWithPower);
-
-  return resultados.map((r) => ({
-    dia: r.dia,
-    potenciaMaxima: r.potencia_maxima,
-  }));
+  return {
+    inversor_Id: inversorId,
+    data_inicio: dataInicio,
+    data_fim: dataFim,
+    totalGerado: calcInvertersGeneration([entityWithPower]),
+  };
 };
 
 export const inversorRepositories: InversorRepository = {
