@@ -82,6 +82,31 @@ const getLeituraMediaTemperaturaPorDia = async (
   }));
 };
 
+const getPotenciaMaximaPorDia = async (
+  inversorId: number,
+  dataInicio: Date,
+  dataFim: Date
+) => {
+  const resultados = await prisma.$queryRaw<
+    { dia: Date; potencia_maxima: number }[]
+  >`
+    SELECT 
+      DATE("datetime") AS dia,
+      MAX("potenciaAtivaWatt") AS potencia_maxima
+    FROM "Leitura"
+    WHERE 
+      "inversorId" = ${inversorId}
+      AND "datetime" BETWEEN ${dataInicio} AND ${dataFim}
+    GROUP BY dia
+    ORDER BY dia;
+  `;
+
+  return resultados.map((r) => ({
+    dia: r.dia,
+    potenciaMaxima: r.potencia_maxima,
+  }));
+};
+
 export const inversorRepositories: InversorRepository = {
   createInversor,
   updateInversor,
@@ -89,4 +114,5 @@ export const inversorRepositories: InversorRepository = {
   getAllInversor,
   getLeituraMediaTemperaturaPorDia,
   getInversor,
+  getPotenciaMaximaPorDia,
 };

@@ -48,6 +48,18 @@ const getLeituraMediaTemperaturaPorDia = async (
   );
 };
 
+const getPotenciaMaximaPorDia = async (
+  inversorId: number,
+  dataInicio: Date,
+  dataFim: Date
+) => {
+  return await inversorRepositories.getPotenciaMaximaPorDia(
+    inversorId,
+    dataInicio,
+    dataFim
+  );
+};
+
 export const inversorService: InversorService = {
   createInversor,
   updateInversor,
@@ -55,4 +67,5 @@ export const inversorService: InversorService = {
   getAllInversor,
   getInversor,
   getLeituraMediaTemperaturaPorDia,
+  getPotenciaMaximaPorDia,
 };

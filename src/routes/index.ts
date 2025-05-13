@@ -6,27 +6,32 @@ import * as fs from "fs";
 
 const Routers = Router();
 
-Routers.get("/api/usinas", usinaController.getAllUsinas); // Busca todas as usinas
-Routers.get("/api/usinas/:id", usinaController.getUsina); // Busca uma usina por ID
-Routers.post("/api/usinas", usinaController.createUsina); // Cria uma nova usina
-Routers.put("/api/usinas/:id", usinaController.updateUsina); // Atualiza os dados de uma usina
-Routers.delete("/api/usinas/:id", usinaController.deleteUsina); // Deleta uma usina
+Routers.get("/api/usinas", usinaController.getAllUsinas);
+Routers.get("/api/usinas/:id", usinaController.getUsina);
+Routers.post("/api/usinas", usinaController.createUsina);
+Routers.put("/api/usinas/:id", usinaController.updateUsina);
+Routers.delete("/api/usinas/:id", usinaController.deleteUsina);
 
-Routers.get("/api/inversores", inversorController.getAllInversores); // Busca todos os inversores
-Routers.get("/api/inversores/:id", inversorController.getInversor); // Busca um inversor por ID
-Routers.post("/api/inversores", inversorController.createInversor); // Cria um novo inversor
-Routers.put("/api/inversores/:id", inversorController.updateInversor); // Atualiza os dados de um inversor
-Routers.delete("/api/inversores/:id", inversorController.deleteInversor); // Deleta um inversor
+Routers.get("/api/inversores", inversorController.getAllInversores);
+Routers.get("/api/inversores/:id", inversorController.getInversor);
+Routers.post("/api/inversores", inversorController.createInversor);
+Routers.put("/api/inversores/:id", inversorController.updateInversor);
+Routers.delete("/api/inversores/:id", inversorController.deleteInversor);
 
 Routers.get(
   "/api/inversor/temperatura/media",
   inversorController.getLeituraMediaTemperaturaPorDia
 );
 
-Routers.get("/api/leitura", leituraController.getAllLeituras); // Busca todas as temperaturas
-Routers.get("/api/leitura/:id", leituraController.getLeitura); // Busca uma temperatura por ID
-Routers.post("/api/leitura", leituraController.createLeitura); // Cria uma nova leitura de temperatura
-Routers.delete("/api/leitura/:id", leituraController.deleteLeitura); // Deleta uma leitura de temperatura
+Routers.get(
+  "/api/inversor/potenciaMaxima",
+  inversorController.getPotenciaMaximaPorDia
+);
+
+Routers.get("/api/leitura", leituraController.getAllLeituras);
+Routers.get("/api/leitura/:id", leituraController.getLeitura);
+Routers.post("/api/leitura", leituraController.createLeitura);
+Routers.delete("/api/leitura/:id", leituraController.deleteLeitura);
 
 const multer = require("multer");
 const upload = multer({ storage: multer.memoryStorage() });
