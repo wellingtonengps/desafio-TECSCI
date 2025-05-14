@@ -21,18 +21,18 @@ const getLeitura = async (req: Request, res: Response) => {
 };
 
 const createLeitura = async (req: Request, res: Response) => {
-  const { datetime, inversorId, potenciaAtivaWatt, temperaturaCelsius } =
+  const { datetime, inversor_id, potencia_ativa_watt, temperatura_celsius } =
     req.body;
   try {
     const leitura = await leituraService.createLeitura({
-      datetime,
-      inversorId,
-      potenciaAtivaWatt,
-      temperaturaCelsius,
+      datetime: datetime["$date"],
+      inversorId: inversor_id,
+      potenciaAtivaWatt: potencia_ativa_watt,
+      temperaturaCelsius: temperatura_celsius,
     });
     res.status(201).json(leitura);
   } catch (error) {
-    res.status(500).json({ error: "Falha ao criar a leitura" });
+    res.status(500).json({ error: "Falha ao criar a leitura" + error });
   }
 };
 

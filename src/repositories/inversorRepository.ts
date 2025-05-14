@@ -4,7 +4,6 @@ import {
   InversorRequest,
   InversorResponse,
 } from "../dto/inversorDto";
-import { LeituraRepository, LeituraResponse } from "../dto/leituraDto";
 import {
   calcInvertersGeneration,
   EntityWithPower,
@@ -68,24 +67,42 @@ const getTemperaturaMedia = async (
   dataInicio: Date,
   dataFim: Date
 ) => {
-  const resultados = await prisma.$queryRaw<
-    { dia: Date; media_temperatura: number }[]
-  >`
-    SELECT 
-      DATE("datetime") AS dia,
-      AVG("temperaturaCelsius") AS media_temperatura
-    FROM "Leitura"
-    WHERE 
-      "inversorId" = ${inversorId}
-      AND "datetime" BETWEEN ${dataInicio} AND ${dataFim}
-    GROUP BY dia
-    ORDER BY dia;
-  `;
+  const leituras = await prisma.leitura.findMany({
+    where: {
+      inversorId,
+      datetime: {
+        gte: dataInicio,
+        lte: dataFim,
+      },
+    },
+    select: {
+      datetime: true,
+      temperaturaCelsius: true,
+    },
+  });
 
-  return resultados.map((r: { dia: Date; media_temperatura: number }) => ({
-    dia: r.dia,
-    mediaTemperatura: r.media_temperatura,
-  }));
+  const agrupadoPorDia = new Map<string, number[]>();
+
+  leituras.forEach(({ datetime, temperaturaCelsius }) => {
+    const diaStr = datetime.toISOString().split("T")[0];
+    if (!agrupadoPorDia.has(diaStr)) {
+      agrupadoPorDia.set(diaStr, []);
+    }
+    agrupadoPorDia.get(diaStr)?.push(temperaturaCelsius);
+  });
+
+  const resultado = Array.from(agrupadoPorDia.entries())
+    .map(([dia, temperaturas]) => {
+      const soma = temperaturas.reduce((acc, t) => acc + t, 0);
+      const media = soma / temperaturas.length;
+      return {
+        dia: new Date(dia),
+        temperatura_media: media,
+      };
+    })
+    .sort((a, b) => a.dia.getTime() - b.dia.getTime());
+
+  return resultado;
 };
 
 const getPotenciaMaxima = async (

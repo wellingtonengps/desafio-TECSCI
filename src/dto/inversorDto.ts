@@ -25,7 +25,7 @@ interface InversorService {
     inversorId: number,
     dataInicio: Date,
     dataFim: Date
-  ): Promise<{ dia: Date; mediaTemperatura: number }[]>;
+  ): Promise<{ dia: Date; temperatura_media: number }[]>;
   getPotenciaMaxima(
     inversorId: number,
     dataInicio: Date,
@@ -53,7 +53,7 @@ interface InversorRepository {
     inversorId: number,
     dataInicio: Date,
     dataFim: Date
-  ): Promise<{ dia: Date; mediaTemperatura: number }[]>;
+  ): Promise<{ dia: Date; temperatura_media: number }[]>;
   getPotenciaMaxima(
     inversorId: number,
     dataInicio: Date,
