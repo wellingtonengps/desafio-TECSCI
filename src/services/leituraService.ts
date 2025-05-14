@@ -6,6 +6,7 @@ import {
 import { leituraRepositories } from "../repositories/leituraRepository";
 
 import * as fs from "fs";
+import path from "path";
 
 const createLeitura = async ({
   datetime,
@@ -57,15 +58,21 @@ const uploadLeituras = async (buffer: Buffer): Promise<string[]> => {
       const errorMsg = `[${timestamp}] Erro ao inserir leitura: ${JSON.stringify(
         leitura
       )}`;
-      console.error(errorMsg);
       errorLogs.push(errorMsg);
     }
   }
 
   if (errorLogs.length > 0) {
-    const logFile = __dirname + "/upload_errors.log"; // Caminho direto
-    const logContent = errorLogs.join("\n") + "\n";
-    fs.appendFileSync(logFile, logContent, "utf8");
+    const logDir = path.join(__dirname, "..", "logs");
+    const logFile = path.join(logDir, "upload_errors.log");
+
+    if (!fs.existsSync(logDir)) {
+      fs.mkdirSync(logDir, { recursive: true });
+    }
+    if (errorLogs.length > 0) {
+      const logContent = errorLogs.join("\n") + "\n";
+      fs.appendFileSync(logFile, logContent, "utf8");
+    }
   }
 
   return errorLogs;
