@@ -1,0 +1,932 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API de Gerenciamento de Usinas Solares",
+    "description": "API para gerenciamento de usinas solares, inversores e leituras de dados",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Servidor local"
+    }
+  ],
+  "paths": {
+    "/api/usinas": {
+      "get": {
+        "summary": "Obter todas as usinas",
+        "responses": {
+          "200": {
+            "description": "Lista de usinas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UsinaResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Criar uma nova usina",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UsinaRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usina criada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsinaFullResponse"
+                },
+                "example": {
+                  "id": 3,
+                  "nome": "Teste",
+                  "createdAt": "2025-01-14T22:54:12.940Z",
+                  "updatedAt": "2025-01-14T22:54:12.940Z"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/usinas/geracao": {
+      "get": {
+        "summary": "Obter geração de energia de uma usina",
+        "description": "Retorna o total de energia gerada por uma usina em um período específico",
+        "parameters": [
+          {
+            "name": "usina_id",
+            "in": "query",
+            "description": "ID da usina para consulta",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          },
+          {
+            "name": "data_inicio",
+            "in": "query",
+            "description": "Data de início no formato ISO 8601 (UTC)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "example": "2025-01-01T00:00:00.000Z"
+          },
+          {
+            "name": "data_fim",
+            "in": "query",
+            "description": "Data de fim no formato ISO 8601 (UTC)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "example": "2025-01-01T23:59:59.999Z"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dados de geração da usina",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "usina_id": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "data_inicio": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-01-01T00:00:00.000Z"
+                    },
+                    "data_fim": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-01-01T23:59:59.999Z"
+                    },
+                    "total_gerado": {
+                      "type": "number",
+                      "example": 1500.75
+                    }
+                  }
+                },
+                "example": {
+                  "usina_id": 1,
+                  "data_inicio": "2025-01-01T00:00:00.000Z",
+                  "data_fim": "2025-01-01T23:59:59.999Z",
+                  "total_gerado": 1500.75
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/usinas/{id}": {
+      "get": {
+        "summary": "Obter uma usina específica",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dados da usina",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsinaResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usina não encontrada"
+          }
+        }
+      },
+      "put": {
+        "summary": "Atualizar uma usina",
+        "description": "Atualiza os dados de uma usina existente",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID da usina a ser atualizada",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nome": {
+                    "type": "string",
+                    "example": "Usina Solar Juiz de Fora"
+                  }
+                },
+                "required": [
+                  "nome"
+                ]
+              },
+              "example": {
+                "nome": "Usina Solar Juiz de Fora"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Usina atualizada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsinaFullResponse"
+                },
+                "example": {
+                  "id": 1,
+                  "nome": "Usina Solar Juiz de Fora",
+                  "createdAt": "2025-05-14T19:40:36.276Z",
+                  "updatedAt": "2025-05-14T23:13:35.664Z"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Excluir uma usina",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Usina excluída com sucesso"
+          }
+        }
+      }
+    },
+    "/api/inversores": {
+      "get": {
+        "summary": "Obter todos os inversores",
+        "responses": {
+          "200": {
+            "description": "Lista de inversores",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InversorResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Criar um novo inversor",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InversorRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Inversor criado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InversorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/inversores/{id}": {
+      "get": {
+        "summary": "Obter um inversor específico",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dados do inversor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InversorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Inversor não encontrado"
+          }
+        }
+      },
+      "put": {
+        "summary": "Atualizar um inversor",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InversorRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Inversor atualizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InversorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Excluir um inversor",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Inversor excluído com sucesso"
+          }
+        }
+      }
+    },
+    "/api/inversor/temperaturaMedia": {
+      "get": {
+        "summary": "Obter temperatura média de um inversor em um período",
+        "description": "Retorna a temperatura média diária de um inversor no período especificado",
+        "parameters": [
+          {
+            "name": "inversor_id",
+            "in": "query",
+            "description": "ID do inversor para consulta",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          },
+          {
+            "name": "data_inicio",
+            "in": "query",
+            "description": "Data de início no formato ISO 8601 (UTC)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "example": "2025-01-01T00:00:00.000Z"
+          },
+          {
+            "name": "data_fim",
+            "in": "query",
+            "description": "Data de fim no formato ISO 8601 (UTC)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "example": "2025-01-08T23:59:59.999Z"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de temperaturas médias por dia",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "dia": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-05-01T00:00:00.000Z"
+                      },
+                      "temperatura_media": {
+                        "type": "number",
+                        "example": 25.5
+                      }
+                    }
+                  }
+                },
+                "example": [
+                  {
+                    "dia": "2025-05-01T00:00:00.000Z",
+                    "temperatura_media": 24.8
+                  },
+                  {
+                    "dia": "2025-05-02T00:00:00.000Z",
+                    "temperatura_media": 26.2
+                  },
+                  {
+                    "dia": "2025-05-03T00:00:00.000Z",
+                    "temperatura_media": 25.1
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/inversor/potenciaMaxima": {
+      "get": {
+        "summary": "Obter potência máxima de um inversor em um período",
+        "description": "Retorna a potência máxima diária de um inversor no período especificado",
+        "parameters": [
+          {
+            "name": "inversor_id",
+            "in": "query",
+            "description": "ID do inversor para consulta",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          },
+          {
+            "name": "data_inicio",
+            "in": "query",
+            "description": "Data de início no formato ISO 8601 (UTC)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "example": "2025-01-01T00:00:00.000Z"
+          },
+          {
+            "name": "data_fim",
+            "in": "query",
+            "description": "Data de fim no formato ISO 8601 (UTC)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "example": "2025-01-08T23:59:59.999Z"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de potências máximas por dia",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "dia": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-01-01T00:00:00.000Z"
+                      },
+                      "potencia_maxima": {
+                        "type": "number",
+                        "example": 4500.75
+                      }
+                    }
+                  }
+                },
+                "example": [
+                  {
+                    "dia": "2025-01-01T00:00:00.000Z",
+                    "potencia_maxima": 4200.50
+                  },
+                  {
+                    "dia": "2025-01-02T00:00:00.000Z",
+                    "potencia_maxima": 4500.75
+                  },
+                  {
+                    "dia": "2025-01-03T00:00:00.000Z",
+                    "potencia_maxima": 4350.25
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/inversor/geracao": {
+      "get": {
+        "summary": "Obter geração total de um inversor em um período",
+        "parameters": [
+          {
+            "name": "inversor_id",
+            "in": "query",
+            "description": "ID do inversor para consulta",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          },
+          {
+            "name": "data_inicio",
+            "in": "query",
+            "description": "Data de início no formato ISO 8601 (UTC)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "example": "2025-01-01T00:00:00.000Z"
+          },
+          {
+            "name": "data_fim",
+            "in": "query",
+            "description": "Data de fim no formato ISO 8601 (UTC)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "example": "2025-01-08T23:59:59.999Z"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dados de geração do inversor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "inversor_id": {
+                      "type": "integer"
+                    },
+                    "data_inicio": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "data_fim": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "total_gerado": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/leitura": {
+      "get": {
+        "summary": "Obter todas as leituras",
+        "responses": {
+          "200": {
+            "description": "Lista de leituras",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LeituraResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Criar uma nova leitura",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LeituraRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Leitura criada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeituraResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/leitura/{id}": {
+      "get": {
+        "summary": "Obter uma leitura específica",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dados da leitura",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeituraResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Leitura não encontrada"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Excluir uma leitura",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Leitura excluída com sucesso"
+          }
+        }
+      }
+    },
+    "/api/leitura/upload": {
+      "post": {
+        "summary": "Upload de arquivo com múltiplas leituras",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Leituras processadas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "erros": {
+                      "type": "integer"
+                    },
+                    "detalhes": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UsinaFullResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "nome": {
+            "type": "string",
+            "example": "Usina Solar Juiz de Fora"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-05-14T19:40:36.276Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-05-14T23:13:35.664Z"
+          }
+        }
+      },
+      "UsinaResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "nome": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "inversores": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InversorCompletoResponse"
+            }
+          }
+        }
+      },
+      "InversorCompletoResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "modelo": {
+            "type": "string"
+          },
+          "usinaId": {
+            "type": "integer"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "UsinaRequest": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string",
+            "example": "Usina 01"
+          }
+        },
+        "required": [
+          "nome"
+        ]
+      },
+      "InversorResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "modelo": {
+            "type": "string",
+            "example": "Inversor B4"
+          },
+          "usina_id": {
+            "type": "integer",
+            "example": 2
+          }
+        }
+      },
+      "InversorRequest": {
+        "type": "object",
+        "properties": {
+          "modelo": {
+            "type": "string",
+            "example": "Inversor B4"
+          },
+          "usina_id": {
+            "type": "integer",
+            "example": 2
+          }
+        },
+        "required": [
+          "modelo",
+          "usina_id"
+        ]
+      },
+      "LeituraResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "inversor_id": {
+            "type": "integer",
+            "example": 5
+          },
+          "datetime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-01-01T03:05:22.733Z"
+          },
+          "potencia_ativa_watt": {
+            "type": "number",
+            "example": 0
+          },
+          "temperatura_celsius": {
+            "type": "number",
+            "example": 0
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-05-14T00:40:10.611Z"
+          }
+        }
+      },
+      "LeituraRequest": {
+        "type": "object",
+        "properties": {
+          "datetime": {
+            "type": "object",
+            "properties": {
+              "$date": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-01-01T03:05:22.733Z"
+              }
+            }
+          },
+          "inversor_id": {
+            "type": "integer",
+            "example": 5
+          },
+          "potencia_ativa_watt": {
+            "type": "number",
+            "example": 0
+          },
+          "temperatura_celsius": {
+            "type": "number",
+            "example": 0
+          }
+        },
+        "required": [
+          "datetime",
+          "inversor_id",
+          "potencia_ativa_watt",
+          "temperatura_celsius"
+        ],
+        "example": {
+          "datetime": {
+            "$date": "2025-01-01T03:05:22.733Z"
+          },
+          "inversor_id": 5,
+          "potencia_ativa_watt": 0,
+          "temperatura_celsius": 0
+        }
+      }
+    }
+  }
+}
