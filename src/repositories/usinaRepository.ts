@@ -61,24 +61,34 @@ const getGeracaoUsina = async (
     },
   });
 
-  console.log(leituras);
+  // Agrupa leituras por inversorId
+  const leiturasPorInversor: Record<number, TimeseriesValue[]> = {};
 
-  const timeseries: TimeseriesValue[] = leituras.map((leitura) => ({
-    date: leitura.datetime,
-    value: leitura.potenciaAtivaWatt,
-  }));
+  leituras.forEach((leitura) => {
+    if (!leiturasPorInversor[leitura.inversorId]) {
+      leiturasPorInversor[leitura.inversorId] = [];
+    }
 
-  console.log(timeseries);
+    leiturasPorInversor[leitura.inversorId].push({
+      date: leitura.datetime,
+      value: leitura.potenciaAtivaWatt,
+    });
+  });
 
-  const entityWithPower: EntityWithPower = {
-    power: timeseries,
-  };
+  // Cria um EntityWithPower para cada inversor
+  const entidades: EntityWithPower[] = Object.values(leiturasPorInversor).map(
+    (timeseries) => ({
+      power: timeseries,
+    })
+  );
+
+  const total_gerado = calcInvertersGeneration(entidades);
 
   return {
     usina_id: usinaId,
     data_inicio: dataInicio,
     data_fim: dataFim,
-    total_gerado: calcInvertersGeneration([entityWithPower]),
+    total_gerado,
   };
 };
 
