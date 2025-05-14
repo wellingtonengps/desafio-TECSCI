@@ -61,7 +61,6 @@ const getGeracaoUsina = async (
     },
   });
 
-  // Agrupa leituras por inversorId
   const leiturasPorInversor: Record<number, TimeseriesValue[]> = {};
 
   leituras.forEach((leitura) => {
@@ -75,7 +74,6 @@ const getGeracaoUsina = async (
     });
   });
 
-  // Cria um EntityWithPower para cada inversor
   const entidades: EntityWithPower[] = Object.values(leiturasPorInversor).map(
     (timeseries) => ({
       power: timeseries,

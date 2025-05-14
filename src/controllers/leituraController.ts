@@ -59,7 +59,7 @@ const uploadLeituras = async (req: Request, res: Response) => {
       message: "Processamento finalizado.",
       erros: errorLogs.length,
       detalhes: errorLogs.length
-        ? "Erros foram salvos em upload_errors.log"
+        ? "Erros foram salvos em /logs/upload_errors.log"
         : "Nenhum erro encontrado",
     });
   } catch (err: any) {

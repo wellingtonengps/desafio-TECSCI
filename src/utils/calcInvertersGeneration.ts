@@ -12,8 +12,6 @@ function calcInvertersGeneration(entitiesWithPower: EntityWithPower[]): number {
     return 0;
   }
 
-  console.log(entitiesWithPower);
-
   let totalGeneration = 0;
 
   for (const entity of entitiesWithPower) {

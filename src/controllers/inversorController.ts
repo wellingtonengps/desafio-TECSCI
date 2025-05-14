@@ -55,10 +55,7 @@ const deleteInversor = async (req: Request, res: Response) => {
   }
 };
 
-const getLeituraMediaTemperaturaPorDia = async (
-  req: Request,
-  res: Response
-) => {
+const getTemperaturaMedia = async (req: Request, res: Response) => {
   try {
     const { inversor_id, data_inicio, data_fim } = req.query;
 
@@ -68,18 +65,22 @@ const getLeituraMediaTemperaturaPorDia = async (
       });
     }
 
-    const id = Number(inversor_id);
-    const inicio = new Date(data_inicio as string);
-    const fim = new Date(data_fim as string);
+    const inversorId = Number(inversor_id);
+    const dataInicio = new Date(data_inicio as string);
+    const dataFim = new Date(data_fim as string);
 
-    if (isNaN(id) || isNaN(inicio.getTime()) || isNaN(fim.getTime())) {
+    if (
+      isNaN(inversorId) ||
+      isNaN(dataInicio.getTime()) ||
+      isNaN(dataFim.getTime())
+    ) {
       res.status(400).json({ error: "Parâmetros inválidos." });
     }
 
-    const resultado = await inversorService.getLeituraMediaTemperaturaPorDia(
-      id,
-      inicio,
-      fim
+    const resultado = await inversorService.getTemperaturaMedia(
+      inversorId,
+      dataInicio,
+      dataFim
     );
     res.status(200).json(resultado);
   } catch (error: any) {
@@ -88,7 +89,7 @@ const getLeituraMediaTemperaturaPorDia = async (
   }
 };
 
-const getPotenciaMaximaPorDia = async (req: Request, res: Response) => {
+const getPotenciaMaxima = async (req: Request, res: Response) => {
   try {
     const { inversor_id, data_inicio, data_fim } = req.query;
 
@@ -106,11 +107,7 @@ const getPotenciaMaximaPorDia = async (req: Request, res: Response) => {
       res.status(400).json({ error: "Parâmetros inválidos." });
     }
 
-    const resultado = await inversorService.getPotenciaMaximaPorDia(
-      id,
-      inicio,
-      fim
-    );
+    const resultado = await inversorService.getPotenciaMaxima(id, inicio, fim);
     res.status(200).json(resultado);
   } catch (error: any) {
     console.error("Erro ao obter média de temperatura por dia:", error);
@@ -158,7 +155,7 @@ export default {
   createInversor,
   updateInversor,
   deleteInversor,
-  getLeituraMediaTemperaturaPorDia,
-  getPotenciaMaximaPorDia,
+  getTemperaturaMedia,
+  getPotenciaMaxima,
   getGeracaoInversor,
 };

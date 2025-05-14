@@ -20,11 +20,11 @@ Routers.put("/api/inversores/:id", inversorController.updateInversor);
 Routers.delete("/api/inversores/:id", inversorController.deleteInversor);
 Routers.get(
   "/api/inversor/temperatura/media",
-  inversorController.getLeituraMediaTemperaturaPorDia
+  inversorController.getTemperaturaMedia
 );
 Routers.get(
   "/api/inversor/potenciaMaxima",
-  inversorController.getPotenciaMaximaPorDia
+  inversorController.getPotenciaMaxima
 );
 Routers.get("/api/inversor/geracao", inversorController.getGeracaoInversor);
 

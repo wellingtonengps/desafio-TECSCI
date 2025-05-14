@@ -9,22 +9,28 @@ type InversorRequest = {
   usinaId: number;
 };
 
+type IntervalParams = {
+  inversorId: number;
+  dataInicio: Date;
+  dataFim: Date;
+};
+
 interface InversorService {
   createInversor(data: InversorRequest): Promise<InversorResponse>;
   updateInversor(data: InversorResponse): Promise<InversorResponse>;
   deleteInversor(id: number): Promise<void>;
   getAllInversor(): Promise<InversorResponse[]>;
   getInversor(id: number): Promise<InversorResponse | null>;
-  getLeituraMediaTemperaturaPorDia(
+  getTemperaturaMedia(
     inversorId: number,
     dataInicio: Date,
     dataFim: Date
   ): Promise<{ dia: Date; mediaTemperatura: number }[]>;
-  getPotenciaMaximaPorDia(
+  getPotenciaMaxima(
     inversorId: number,
     dataInicio: Date,
     dataFim: Date
-  ): Promise<{ dia: Date; potenciaMaxima: number }[]>;
+  ): Promise<{ dia: Date; potencia_maxima: number }[]>;
   getGeracaoInversor(
     inversorId: number,
     dataInicio: Date,
@@ -43,16 +49,16 @@ interface InversorRepository {
   deleteInversor(id: number): Promise<void>;
   getAllInversor(): Promise<InversorResponse[]>;
   getInversor(id: number): Promise<InversorResponse | null>;
-  getLeituraMediaTemperaturaPorDia(
+  getTemperaturaMedia(
     inversorId: number,
     dataInicio: Date,
     dataFim: Date
   ): Promise<{ dia: Date; mediaTemperatura: number }[]>;
-  getPotenciaMaximaPorDia(
+  getPotenciaMaxima(
     inversorId: number,
     dataInicio: Date,
     dataFim: Date
-  ): Promise<{ dia: Date; potenciaMaxima: number }[]>;
+  ): Promise<{ dia: Date; potencia_maxima: number }[]>;
   getGeracaoInversor(
     inversorId: number,
     dataInicio: Date,

@@ -18,7 +18,7 @@ const createInversor = async ({ modelo, usinaId }: InversorRequest) => {
 
   return {
     id: inversor.id,
-    modelo: inversor.modelo ?? "", // Garante string
+    modelo: inversor.modelo ?? "",
     usinaId: inversor.usinaId,
   };
 };
@@ -63,7 +63,7 @@ const getInversor = async (id: number) => {
   };
 };
 
-const getLeituraMediaTemperaturaPorDia = async (
+const getTemperaturaMedia = async (
   inversorId: number,
   dataInicio: Date,
   dataFim: Date
@@ -88,29 +88,45 @@ const getLeituraMediaTemperaturaPorDia = async (
   }));
 };
 
-const getPotenciaMaximaPorDia = async (
+const getPotenciaMaxima = async (
   inversorId: number,
   dataInicio: Date,
   dataFim: Date
 ) => {
-  const resultados = await prisma.$queryRaw<
-    { dia: Date; potencia_maxima: number }[]
-  >`
-    SELECT 
-      DATE("datetime") AS dia,
-      MAX("potenciaAtivaWatt") AS potencia_maxima
-    FROM "Leitura"
-    WHERE 
-      "inversorId" = ${inversorId}
-      AND "datetime" BETWEEN ${dataInicio} AND ${dataFim}
-    GROUP BY dia
-    ORDER BY dia;
-  `;
+  const resultados = await prisma.leitura.groupBy({
+    by: ["datetime"],
+    where: {
+      inversorId: inversorId,
+      datetime: {
+        gte: dataInicio,
+        lte: dataFim,
+      },
+    },
+    _max: {
+      potenciaAtivaWatt: true,
+    },
+  });
 
-  return resultados.map((r: { dia: Date; potencia_maxima: number }) => ({
-    dia: r.dia,
-    potenciaMaxima: r.potencia_maxima,
-  }));
+  const agrupadoPorDia = new Map<string, number>();
+
+  resultados.forEach((resultado) => {
+    const dia = resultado.datetime.toISOString().split("T")[0]; // deixa apenas o 'YYYY-MM-DD'
+    const potenciaAtual = resultado._max.potenciaAtivaWatt ?? 0;
+
+    const potenciaAnterior = agrupadoPorDia.get(dia) ?? 0;
+    if (potenciaAtual > potenciaAnterior) {
+      agrupadoPorDia.set(dia, potenciaAtual);
+    }
+  });
+
+  const resultadoFinal = Array.from(agrupadoPorDia.entries())
+    .map(([dia, potenciaMaxima]) => ({
+      dia: new Date(dia),
+      potencia_maxima: potenciaMaxima,
+    }))
+    .sort((a, b) => a.dia.getTime() - b.dia.getTime());
+
+  return resultadoFinal;
 };
 
 const getGeracaoInversor = async (
@@ -135,14 +151,10 @@ const getGeracaoInversor = async (
     },
   });
 
-  console.log(leituras);
-
   const timeseries: TimeseriesValue[] = leituras.map((leitura) => ({
     date: leitura.datetime,
     value: leitura.potenciaAtivaWatt,
   }));
-
-  console.log(timeseries);
 
   const entityWithPower: EntityWithPower = {
     power: timeseries,
@@ -161,8 +173,8 @@ export const inversorRepositories: InversorRepository = {
   updateInversor,
   deleteInversor,
   getAllInversor,
-  getLeituraMediaTemperaturaPorDia,
+  getTemperaturaMedia,
   getInversor,
-  getPotenciaMaximaPorDia,
+  getPotenciaMaxima,
   getGeracaoInversor,
 };
