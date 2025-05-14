@@ -94,7 +94,7 @@ const getPotenciaMaximaPorDia = async (req: Request, res: Response) => {
 
     if (!inversor_id || !data_inicio || !data_fim) {
       res.status(400).json({
-        error: "Parâmetros obrigatórios: inversorId, dataInicio, dataFim.",
+        error: "Parâmetros obrigatórios: inversor_id, data_inicio, data_fim.",
       });
     }
 
@@ -124,19 +124,27 @@ const getGeracaoInversor = async (req: Request, res: Response) => {
 
     if (!inversor_id || !data_inicio || !data_fim) {
       res.status(400).json({
-        error: "Parâmetros obrigatórios: inversorId, dataInicio, dataFim.",
+        error: "Parâmetros obrigatórios: inversor_id, data_inicio, data_fim.",
       });
     }
 
-    const id = Number(inversor_id);
-    const inicio = new Date(data_inicio as string);
-    const fim = new Date(data_fim as string);
+    const inversorId = Number(inversor_id);
+    const dataInicio = new Date(data_inicio as string);
+    const dataFim = new Date(data_fim as string);
 
-    if (isNaN(id) || isNaN(inicio.getTime()) || isNaN(fim.getTime())) {
+    if (
+      isNaN(inversorId) ||
+      isNaN(dataInicio.getTime()) ||
+      isNaN(dataFim.getTime())
+    ) {
       res.status(400).json({ error: "Parâmetros inválidos." });
     }
 
-    const resultado = await inversorService.getGeracaoInversor(id, inicio, fim);
+    const resultado = await inversorService.getGeracaoInversor(
+      inversorId,
+      dataInicio,
+      dataFim
+    );
     res.status(200).json(resultado);
   } catch (error: any) {
     console.error("Erro ao obter média de temperatura por dia:", error);

@@ -30,10 +30,10 @@ interface InversorService {
     dataInicio: Date,
     dataFim: Date
   ): Promise<{
-    inversor_Id: number;
+    inversor_id: number;
     data_inicio: Date;
     data_fim: Date;
-    totalGerado: number;
+    total_gerado: number;
   }>;
 }
 
@@ -58,10 +58,10 @@ interface InversorRepository {
     dataInicio: Date,
     dataFim: Date
   ): Promise<{
-    inversor_Id: number;
+    inversor_id: number;
     data_inicio: Date;
     data_fim: Date;
-    totalGerado: number;
+    total_gerado: number;
   }>;
 }
 

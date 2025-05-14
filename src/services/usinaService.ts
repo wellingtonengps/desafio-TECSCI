@@ -28,10 +28,19 @@ const getUsina = async (id: number): Promise<UsinaResponse> => {
   return usina;
 };
 
+const getGeracaoUsina = async (
+  usinaId: number,
+  dataInicio: Date,
+  dataFim: Date
+) => {
+  return await usinaRepositories.getGeracaoUsina(usinaId, dataInicio, dataFim);
+};
+
 export const usinaService: UsinaService = {
   createUsina,
   updateUsina,
   deleteUsina,
   getAllUsina,
   getUsina,
+  getGeracaoUsina,
 };

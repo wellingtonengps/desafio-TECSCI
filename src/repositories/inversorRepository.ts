@@ -135,19 +135,24 @@ const getGeracaoInversor = async (
     },
   });
 
+  console.log(leituras);
+
   const timeseries: TimeseriesValue[] = leituras.map((leitura) => ({
     date: leitura.datetime,
     value: leitura.potenciaAtivaWatt,
   }));
 
+  console.log(timeseries);
+
   const entityWithPower: EntityWithPower = {
     power: timeseries,
   };
+
   return {
-    inversor_Id: inversorId,
+    inversor_id: inversorId,
     data_inicio: dataInicio,
     data_fim: dataFim,
-    totalGerado: calcInvertersGeneration([entityWithPower]),
+    total_gerado: calcInvertersGeneration([entityWithPower]),
   };
 };
 

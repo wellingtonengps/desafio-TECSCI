@@ -51,10 +51,45 @@ const deleteUsina = async (req: Request, res: Response) => {
   }
 };
 
+const getGeracaoUsina = async (req: Request, res: Response) => {
+  try {
+    const { usina_id, data_inicio, data_fim } = req.query;
+
+    if (!usina_id || !data_inicio || !data_fim) {
+      res.status(400).json({
+        error: "Parâmetros obrigatórios: usina_id, data_inicio, data_fim.",
+      });
+    }
+
+    const usinaId = Number(usina_id);
+    const dataInicio = new Date(data_inicio as string);
+    const dataFim = new Date(data_fim as string);
+
+    if (
+      isNaN(usinaId) ||
+      isNaN(dataInicio.getTime()) ||
+      isNaN(dataFim.getTime())
+    ) {
+      res.status(400).json({ error: "Parâmetros inválidos." });
+    }
+
+    const resultado = await usinaService.getGeracaoUsina(
+      usinaId,
+      dataInicio,
+      dataFim
+    );
+    res.status(200).json(resultado);
+  } catch (error: any) {
+    console.error("Erro ao obter média de temperatura por dia:", error);
+    res.status(500).json({ error: "Erro interno do servidor." });
+  }
+};
+
 export default {
   getAllUsinas,
   getUsina,
   createUsina,
   updateUsina,
   deleteUsina,
+  getGeracaoUsina,
 };

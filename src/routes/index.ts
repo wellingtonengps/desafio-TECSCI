@@ -7,6 +7,7 @@ import * as fs from "fs";
 const Routers = Router();
 
 Routers.get("/api/usinas", usinaController.getAllUsinas);
+Routers.get("/api/usinas/geracao", usinaController.getGeracaoUsina);
 Routers.get("/api/usinas/:id", usinaController.getUsina);
 Routers.post("/api/usinas", usinaController.createUsina);
 Routers.put("/api/usinas/:id", usinaController.updateUsina);
@@ -17,17 +18,14 @@ Routers.get("/api/inversores/:id", inversorController.getInversor);
 Routers.post("/api/inversores", inversorController.createInversor);
 Routers.put("/api/inversores/:id", inversorController.updateInversor);
 Routers.delete("/api/inversores/:id", inversorController.deleteInversor);
-
 Routers.get(
   "/api/inversor/temperatura/media",
   inversorController.getLeituraMediaTemperaturaPorDia
 );
-
 Routers.get(
   "/api/inversor/potenciaMaxima",
   inversorController.getPotenciaMaximaPorDia
 );
-
 Routers.get("/api/inversor/geracao", inversorController.getGeracaoInversor);
 
 Routers.get("/api/leitura", leituraController.getAllLeituras);
