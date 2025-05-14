@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { leituraService } from "../services/leituraService";
-import { LeituraRequest } from "../dto/leituraDto";
 
 const getAllLeituras = async (req: Request, res: Response) => {
   try {
@@ -37,10 +36,6 @@ const createLeitura = async (req: Request, res: Response) => {
   }
 };
 
-const createLeituraInterno = async (data: LeituraRequest) => {
-  await leituraService.createLeitura(data);
-};
-
 const deleteLeitura = async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
   try {
@@ -51,10 +46,31 @@ const deleteLeitura = async (req: Request, res: Response) => {
   }
 };
 
+const uploadLeituras = async (req: Request, res: Response) => {
+  if (!req.file) {
+    res.status(400).json({ error: "Arquivo não enviado." });
+    return;
+  }
+
+  try {
+    const errorLogs = await leituraService.uploadLeituras(req.file.buffer);
+
+    res.status(200).json({
+      message: "Processamento finalizado.",
+      erros: errorLogs.length,
+      detalhes: errorLogs.length
+        ? "Erros foram salvos em upload_errors.log"
+        : "Nenhum erro encontrado",
+    });
+  } catch (err: any) {
+    res.status(400).json({ error: "Erro geral: " + err.message });
+  }
+};
+
 export default {
   getAllLeituras,
   getLeitura,
   createLeitura,
-  createLeituraInterno,
   deleteLeitura,
+  uploadLeituras,
 };

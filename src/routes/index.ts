@@ -39,6 +39,12 @@ const upload = multer({ storage: multer.memoryStorage() });
 Routers.post(
   "/api/leitura/upload",
   upload.single("file"),
+  leituraController.uploadLeituras
+);
+/*
+Routers.post(
+  "/api/leitura/upload",
+  upload.single("file"),
   async (req: any, res) => {
     const errorLogs: string[] = [];
 
@@ -83,6 +89,6 @@ Routers.post(
       res.status(400).json({ error: "Erro geral: " + err.message });
     }
   }
-);
+);*/
 
 export default Routers;

@@ -13,11 +13,16 @@ type LeituraRequest = {
   temperaturaCelsius: number;
 };
 
+interface FileRequest extends Request {
+  file: Express.Multer.File;
+}
+
 interface LeituraService {
   createLeitura(data: LeituraRequest): Promise<LeituraResponse>;
   deleteLeitura(id: number): Promise<void>;
   getAllLeitura(): Promise<LeituraResponse[]>;
   getLeitura(id: number): Promise<LeituraResponse | null>;
+  uploadLeituras(file: Buffer): Promise<string[]>;
 }
 
 interface LeituraRepository {
